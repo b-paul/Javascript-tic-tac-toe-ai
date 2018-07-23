@@ -48,7 +48,7 @@ function printBoard() {
 }
 
 function resetBoard() {
-  var board = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+  board = [0, 0, 0, 0, 0, 0, 0, 0, 0];
 }
 
 function placeCross(square) {
@@ -63,7 +63,7 @@ function placeNought(square) {
 
 function emptySquare(square, lastTurn) {
   board[square] = 0;
-  turn = lastTurn
+  turn = lastTurn;
 }
 
 function getMoves() {
