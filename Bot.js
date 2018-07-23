@@ -2,8 +2,8 @@ var board = [0, 0, 0, 0, 0, 0, 0, 0, 0];
 
 // 0 is empty 1 is a cross and 2 is a nought
 
-var playersSide = 0;
-var aisSide = 1;
+var playersSide = 1;
+var aisSide = 0;
 var turn = 0;
 
 // 0 is crosses and 1 is noughts
@@ -45,6 +45,7 @@ function printBoard() {
   console.log(line2[0] + '|' + line2[1] + '|' + line2[2]);
   console.log('-+-+-');
   console.log(line3[0] + '|' + line3[1] + '|' + line3[2]);
+  console.log("\n")
 }
 
 function resetBoard() {
@@ -91,8 +92,8 @@ function getBestMove() {
     } else {
       placeCross(moves[i]);
     }
-    var score = -negamax(true);
-    //console.log(score);
+    var score = (aisSide === 0) ? -negamax(1) :negamax(-1);
+    console.log(score);
     emptySquare(moves[i], aisSide);
     if (score > bestScore) {
       bestScore = score;
@@ -102,7 +103,7 @@ function getBestMove() {
   return bestMove;
 }
 
-function negamax(isTheirTurn) {
+function negamax(colour) {
   var moves = getMoves();
   if (moves.length === 0 ||
   (board[0] == 1 && board[1] == 1 && board[2] == 1) ||
@@ -121,12 +122,12 @@ function negamax(isTheirTurn) {
   (board[2] == 2 && board[5] == 2 && board[6] == 2) ||
   (board[0] == 2 && board[4] == 2 && board[8] == 2) ||
   (board[2] == 2 && board[4] == 2 && board[6] == 2)) {
-    if (isTheirTurn) return (aisSide === 0) ? getScore() : -getScore();
-    return (aisSide === 0) ? getScore() : -getScore();
+    //console.log((aisSide === 0) ? -getScore() : getScore())
+    return getScore() * colour;
   }
   var bestScore = -999999;
   for (var i = 0; i < moves.length; i++) {
-    if (isTheirTurn) {
+    if ((aisSide === 0 && colour == -1) || (aisSide === 1 && colour === 1)) {
       if (playersSide === 0) {
         placeCross(moves[i]);
       } else {
@@ -139,9 +140,9 @@ function negamax(isTheirTurn) {
         placeCross(moves[i]);
       }
     }
-    var score = -negamax(!isTheirTurn);
+    var score = -negamax(-colour);
     //console.log(score);
-    if (isTheirTurn) {
+    if ((aisSide === 0 && colour == -1) || (aisSide === 1 && colour === 1)) {
       emptySquare(moves[i], playersSide);
     } else {
       emptySquare(moves[i], aisSide);
@@ -174,3 +175,6 @@ function getScore() {
     return 0;
   }
 }
+
+placeCross(getBestMove());
+printBoard();
