@@ -86,16 +86,17 @@ function getBestMove() {
   var moves = getMoves();
   var bestScore = -999999
   var bestMove;
-  for (var i = 0; i < moves.length; i++) {
+  for (var i = 0; i < moves.length; i++) {// Do each move
     if(playersSide === 0) {
       placeNought(moves[i]);
     } else {
       placeCross(moves[i]);
     }
+    // Returns negative score because the original function is based off crosses, which is positive
     var score = (aisSide === 0) ? -negamax(1) :negamax(-1);
     console.log(score);
     emptySquare(moves[i], aisSide);
-    if (score > bestScore) {
+    if (score > bestScore) { // If there is a better move, do that instead
       bestScore = score;
       bestMove = moves[i];
     } 
@@ -105,6 +106,7 @@ function getBestMove() {
 
 function negamax(colour) {
   var moves = getMoves();
+  // If someone was won, get the score
   if (moves.length === 0 ||
   (board[0] == 1 && board[1] == 1 && board[2] == 1) ||
   (board[3] == 1 && board[4] == 1 && board[5] == 1) ||
@@ -122,10 +124,10 @@ function negamax(colour) {
   (board[2] == 2 && board[5] == 2 && board[6] == 2) ||
   (board[0] == 2 && board[4] == 2 && board[8] == 2) ||
   (board[2] == 2 && board[4] == 2 && board[6] == 2)) {
-    //console.log((aisSide === 0) ? -getScore() : getScore())
-    return getScore() * colour;
+    return getScore() * colour; // Multiply by the side so that it gives a score relative to the player
   }
   var bestScore = -999999;
+  // Does each possible move and checks what the other player would do in that situation
   for (var i = 0; i < moves.length; i++) {
     if ((aisSide === 0 && colour == -1) || (aisSide === 1 && colour === 1)) {
       if (playersSide === 0) {
@@ -141,18 +143,17 @@ function negamax(colour) {
       }
     }
     var score = -negamax(-colour);
-    //console.log(score);
     if ((aisSide === 0 && colour == -1) || (aisSide === 1 && colour === 1)) {
       emptySquare(moves[i], playersSide);
     } else {
       emptySquare(moves[i], aisSide);
-    }
+    } // If this score was better than the last, update it
     if (score > bestScore) bestScore = score;
   }
   return bestScore;
 }
 
-function getScore() {
+function getScore() { // if they win, give them 10 points, if they loose, give them -10, else give 0
   if ((board[0] == 1 && board[1] == 1 && board[2] == 1) ||
   (board[3] == 1 && board[4] == 1 && board[5] == 1) ||
   (board[6] == 1 && board[7] == 1 && board[8] == 1) ||
